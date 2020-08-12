@@ -1,6 +1,6 @@
 import React from 'react';
 import logo, { ReactComponent } from './logo.svg';
-import './App.scss';
+import './styles.css';
 import { render } from '@testing-library/react';
 import { Login } from './Screens/Login/Login';
 import { Overview } from './Screens/Overview/Overview';

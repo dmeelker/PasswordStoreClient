@@ -25,20 +25,21 @@ export function EntryTable(props: EntryTableProps) {
         <td>{item.name}</td>
         <td>{item.username}</td>
         <td>
-          <button onClick={() => props.openEntry(item)}>Open</button>
-          <button onClick={() => copyToClipboard(item)}>Copy</button>
-          <button onClick={() => props.onDeleteEntry(item)}>Delete</button>
+          <button className="btn" onClick={() => props.openEntry(item)}>Open</button>
+          <button className="btn" onClick={() => copyToClipboard(item)}>Copy</button>
+          <button className="btn" onClick={() => props.onDeleteEntry(item)}>Delete</button>
         </td>
       </tr>
     );
   }
 
   return (
-    <table className="entry-table">
+    <table className="w-full">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>User name</th>
+          <th className="w-1/5">Name</th>
+          <th className="w-1/5">User name</th>
+          <th className="w-3/5"></th>
         </tr>
       </thead>
       <tbody>

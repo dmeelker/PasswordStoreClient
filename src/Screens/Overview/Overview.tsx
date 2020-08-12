@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import "./Overview.scss";
+//import "./Overview.scss";
 import { PasswordGroup, ApplicationModel, PasswordEntry } from '../../Model/Model';
 import { Overlay } from '../../Components/Overlay/Overlay';
 import { EntryTable } from './EntryTable';
@@ -10,6 +10,7 @@ export function Overview() {
   const [groups, setGroups] = useState(ApplicationModel.instance.groups);
   const [selectedGroup, setSelectedGroup] = useState(groups[0]);
   const [openEntry, setOpenEntry] = useState<PasswordEntry>();
+  const [createMode, setCreateMode] = useState(false);
 
   function createNewGroup(){
     let newGroupName = prompt("What should the new group be called?");
@@ -23,14 +24,11 @@ export function Overview() {
 
   function createNewEntry(){
     let newEntry = new PasswordEntry();
-    newEntry.name = "New entry";
-
-    let updatedGroup = selectedGroup.clone();
-    updatedGroup.entries.push(newEntry);
-    setSelectedGroup(updatedGroup);
+    showEntryDetails(newEntry, true);
   }
 
-  function doOpenEntry(entry: PasswordEntry) {
+  function showEntryDetails(entry: PasswordEntry, createMode: boolean = false) {
+    setCreateMode(createMode);
     setOpenEntry(entry);
   }
 
@@ -41,7 +39,17 @@ export function Overview() {
     setSelectedGroup(updatedGroup);
   }
 
-  function clearOpenEntrySelection() {
+  function completeEdit() {
+    if(createMode && openEntry) {
+      let updatedGroup = selectedGroup.clone();
+      updatedGroup.entries.push(openEntry);
+      setSelectedGroup(updatedGroup);
+    }
+
+    setOpenEntry(undefined);
+  }
+
+  function cancelEdit() {
     setOpenEntry(undefined);
   }
 
@@ -49,23 +57,23 @@ export function Overview() {
   if (openEntry) {
     entryDetails = (
       <Overlay>
-        <EntryDetails entry={openEntry} editingDone={clearOpenEntrySelection}/>
+        <EntryDetails entry={openEntry} savePressed={completeEdit} cancelPressed={cancelEdit}/>
       </Overlay>
     );
   }
 
   return (
-    <div className="overview-wrap">
-      <div className="header">Overview
-        <button onClick={createNewGroup}>Add Group</button>
-        <button onClick={createNewEntry}>Add Entry</button>
+    <div className="h-full flex flex-col">
+      <div className="py-4">
+        <button className="btn-toolbar" onClick={createNewGroup}>Add Group</button>
+        <button className="btn-toolbar" onClick={createNewEntry}>Add Entry</button>
       </div>
-      <div className="overview-container">
-        <div className="tree-container">
+      <div className="flex-1 flex">
+        <div className="w-1/4">
           <GroupList groups={groups} selectedGroup={selectedGroup} selectionChangedHandler={(newSelection => setSelectedGroup(newSelection))} />
         </div>
-        <div className="table-container">
-          <EntryTable entries={selectedGroup.entries} openEntry={doOpenEntry} onDeleteEntry={doDeleteEntry}/>
+        <div className="flex-1 px-4">
+          <EntryTable entries={selectedGroup.entries} openEntry={showEntryDetails} onDeleteEntry={doDeleteEntry}/>
         </div>
       </div>
       {entryDetails}

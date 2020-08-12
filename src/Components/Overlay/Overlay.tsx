@@ -1,5 +1,5 @@
 import React from "react";
-import "./Overlay.scss";
+//import "./Overlay.scss";
 
 export interface OverlayProps {
     children: any;
@@ -7,7 +7,7 @@ export interface OverlayProps {
 
 export function Overlay(props: OverlayProps) {
     return (
-        <div className="overlay">
+        <div className="fixed inset-0 bg-black bg-opacity-25 w-full h-full">
             {props.children}
         </div>
     );

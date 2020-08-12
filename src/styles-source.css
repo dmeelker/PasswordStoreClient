@@ -1,0 +1,62 @@
+@import "tailwindcss/base";
+
+@import "tailwindcss/components";
+
+@import "tailwindcss/utilities";
+
+
+.btn {
+    @apply bg-gray-200 px-6 py-2 rounded border-gray-100 mx-1;
+}
+
+.btn:hover {
+    @apply bg-gray-400;
+}
+
+.btn-primary {
+    @apply bg-blue-200 px-6 py-2 rounded border-gray-100 mx-1;
+}
+
+.btn-primary:hover {
+    @apply bg-blue-400;
+}
+
+.btn-secondary {
+    @apply bg-gray-200 px-6 py-2 rounded border-gray-100 mx-1;
+}
+
+.btn-secondary:hover {
+    @apply bg-gray-400;
+}
+
+.btn-toolbar {
+    @apply bg-gray-200 px-2 py-2 rounded border-gray-100 mx-1;
+}
+
+.btn-toolbar:hover {
+    @apply bg-gray-400;
+}
+
+/* Forms */
+input[type="text"], input[type="password"] {
+    @apply border border-gray-500 rounded px-2 leading-8;
+}
+
+input[type="text"]:focus, input[type="password"]:focus {
+    @apply outline-none shadow-outline border-blue-300;
+}
+
+
+/* Table */
+
+table {
+    @apply rounded shadow;
+}
+
+th {
+    @apply bg-gray-200 text-left px-4 py-2 font-medium border-b border-gray-300;
+}
+
+td {
+    @apply bg-gray-100 border-b border-gray-300 px-4 py-4;   
+}

@@ -1,13 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { PasswordEntry } from '../../Model/Model';
 
 interface EntryDetailsProp {
     entry: PasswordEntry;
-    editingDone: () => any;
+    savePressed: () => any;
+    cancelPressed: () => any;
 }
 
 export function EntryDetails(props: EntryDetailsProp) {
     let entry = props.entry;
+    const firstField = React.useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        firstField.current?.focus();
+    });
 
     const onFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -16,29 +22,37 @@ export function EntryDetails(props: EntryDetailsProp) {
         entry.name = formData.get("name") as string;
         entry.username = formData.get("username") as string;
         entry.password = formData.get("password") as string;
-        props.editingDone();
+        props.savePressed();
     };
 
     const cancelButtonPressed = (event: React.MouseEvent) => {
         event.preventDefault();
-        props.editingDone();
+        props.cancelPressed();
     };
 
     return (
-        <div className="entry-details">
+        <div className="m-auto w-3/5 my-10 bg-white shadow overflow-hidden sm:rounded-lg">
             <form onSubmit={onFormSubmit}>
-                <div className="table">
-                    <label>Name</label>
-                    <input type="text" name="name" defaultValue={props.entry.name} />
+                <div className="leading-8">
+                    <div className="bg-gray-100 px-4 py-5 grid grid-cols-3 gap-4">
+                        <label className="">Name</label>
+                        <input type="text" name="name" className="col-span-2" defaultValue={props.entry.name} autoComplete="off" ref={firstField}/>
+                    </div>
 
-                    <label>User name</label>
-                    <input type="text" name="username" defaultValue={props.entry.username} />
+                    <div className="bg-white px-4 py-5 grid grid-cols-3 gap-4">
+                        <label className="">User name</label>
+                        <input type="text" name="username" className="col-span-2" defaultValue={props.entry.username} autoComplete="off"/>
+                    </div>
 
-                    <label>Password</label>
-                    <input type="password" name="password" defaultValue={props.entry.password} />
+                    <div className="bg-gray-100 px-4 py-5 grid grid-cols-3 gap-4">
+                        <label className="">Password</label>
+                        <input type="password" name="password" className="col-span-2" defaultValue={props.entry.password} />
+                    </div>
                 </div>
-                <input type="submit" value="Save"></input>
-                <button onClick={cancelButtonPressed}>Cancel</button>
+                <div className="text-right m-4">
+                    <input className="btn-primary" type="submit" value="Save"></input>
+                    <button className="btn-secondary" onClick={cancelButtonPressed}>Cancel</button>
+                </div>
             </form>
         </div>
     );
