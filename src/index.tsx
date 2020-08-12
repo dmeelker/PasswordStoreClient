@@ -1,8 +1,35 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './index.scss';
 import App from './App';
-import * as serviceWorker from './serviceWorker';
+import { ApplicationModel, PasswordGroup, PasswordEntry } from './Model/Model';
+
+let group1 = new PasswordGroup("Group 1");
+{
+  let entry = new PasswordEntry();
+  entry.name = "Bank 1";
+  entry.username = "piet";
+  entry.password = "lala";
+  group1.entries.push(entry);
+}
+{
+  let entry = new PasswordEntry();
+  entry.name = "Bank 2";
+  entry.username = "piet 2";
+  group1.entries.push(entry);
+}
+let group2 = new PasswordGroup("Group 2");
+{
+  let entry = new PasswordEntry();
+  entry.name = "Bank 3";
+  entry.username = "piet 3";
+  group2.entries.push(entry);
+}
+let group3 = new PasswordGroup("Group 3");
+
+ApplicationModel.instance.groups.push(group1);
+ApplicationModel.instance.groups.push(group2);
+ApplicationModel.instance.groups.push(group3);
 
 ReactDOM.render(
   <React.StrictMode>
@@ -10,8 +37,3 @@ ReactDOM.render(
   </React.StrictMode>,
   document.getElementById('root')
 );
-
-// If you want your app to work offline and load faster, you can change
-// unregister() to register() below. Note this comes with some pitfalls.
-// Learn more about service workers: https://bit.ly/CRA-PWA
-serviceWorker.unregister();

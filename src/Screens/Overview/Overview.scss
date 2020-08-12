@@ -1,0 +1,95 @@
+.overview-wrap {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+
+    .header {
+        height: 2em;
+        line-height: 2em;
+    }
+
+    .overview-container {
+        display: flex;
+        flex-grow: 1;
+    
+        .tree-container{
+            min-width: 300px;
+        }
+    
+        .table-container{
+            flex-grow: 1;
+        }
+    }
+}
+
+.group-list {
+    height: 100%;
+
+    button {
+        display: block;
+        text-align: left;
+        border: none;
+        background-color: transparent;
+        outline: none;
+        padding-top: .25em;
+        padding-bottom: .25em;
+
+        &:hover{
+            font-weight: 600;
+            background-color: lightgray;
+        }
+    }
+}
+
+.entry-table {
+    width: 100%;
+    border-collapse: collapse;
+
+    th, td {
+        text-align: left;
+        border: none;
+    }
+
+    thead {
+        th:nth-child(1) {
+            width: 60%;
+        }
+
+        th:nth-child(2) {
+            width: 30%;
+        }
+    }
+
+    tbody {
+        tr:nth-child(odd) td { 
+            background-color: lightgray;
+        }
+    }
+}
+
+.entry-details {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+
+    .table {
+        display: flex;
+        flex-wrap: wrap;
+
+        * {
+            flex-grow: 1;
+            box-sizing: border-box;
+            width: 50%;
+        }
+
+        *:nth-child(odd) {
+            width: 30%;
+        }
+        *:nth-child(even) {
+            width: 70%;
+        }
+    }
+}
