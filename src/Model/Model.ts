@@ -19,20 +19,36 @@ export class PasswordGroup {
         clone.entries = this.entries;
         return clone;
     }
+
+    public add(entry: PasswordEntry) {
+        this.entries.push(entry);
+        this.entries = this.entries.sort((a, b) => a.name.localeCompare(b.name));
+    }
 };
 
 export class PasswordEntry {
+    public group: PasswordGroup;
     public id: string = uuid();
     public name: string = "";
+    public url: string = "";
     public username: string = "";
     public password: string = "";
 
+    constructor(group: PasswordGroup) {
+        this.group = group;
+    }
+
     public clone() : PasswordEntry {
-        let clone = new PasswordEntry();
+        let clone = new PasswordEntry(this.group);
         clone.id = this.id;
         clone.name = this.name;
+        clone.url = this.url;
         clone.username = this.username;
         clone.password = this.password;
         return clone;
+    }
+
+    public containsUrl(): boolean {
+        return this.url != null && this.url.trim().length > 0;
     }
 };

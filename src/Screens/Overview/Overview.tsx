@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-//import "./Overview.scss";
 import { PasswordGroup, ApplicationModel, PasswordEntry } from '../../Model/Model';
 import { Overlay } from '../../Components/Overlay/Overlay';
 import { EntryTable } from './EntryTable';
@@ -9,8 +8,12 @@ import { EntryDetails } from './EntryDetails';
 export function Overview() {
   const [groups, setGroups] = useState(ApplicationModel.instance.groups);
   const [selectedGroup, setSelectedGroup] = useState(groups[0]);
+  const [selectedEntry, setSelectedEntry] = useState<PasswordEntry>();
   const [openEntry, setOpenEntry] = useState<PasswordEntry>();
   const [createMode, setCreateMode] = useState(false);
+
+  //if(!openEntry)
+    //showEntryDetails(selectedGroup.entries[0]);
 
   function createNewGroup(){
     let newGroupName = prompt("What should the new group be called?");
@@ -23,7 +26,7 @@ export function Overview() {
   }
 
   function createNewEntry(){
-    let newEntry = new PasswordEntry();
+    let newEntry = new PasswordEntry(selectedGroup);
     showEntryDetails(newEntry, true);
   }
 
@@ -42,7 +45,7 @@ export function Overview() {
   function completeEdit() {
     if(createMode && openEntry) {
       let updatedGroup = selectedGroup.clone();
-      updatedGroup.entries.push(openEntry);
+      updatedGroup.add(openEntry);
       setSelectedGroup(updatedGroup);
     }
 
@@ -68,12 +71,12 @@ export function Overview() {
         <button className="btn-toolbar" onClick={createNewGroup}>Add Group</button>
         <button className="btn-toolbar" onClick={createNewEntry}>Add Entry</button>
       </div>
-      <div className="flex-1 flex">
-        <div className="w-1/4">
+      <div className="flex-1 flex overflow-hidden px-4 pb-4">
+        <div className="w-1/4 mr-4">
           <GroupList groups={groups} selectedGroup={selectedGroup} selectionChangedHandler={(newSelection => setSelectedGroup(newSelection))} />
         </div>
-        <div className="flex-1 px-4">
-          <EntryTable entries={selectedGroup.entries} openEntry={showEntryDetails} onDeleteEntry={doDeleteEntry}/>
+        <div className="flex-1 overflow-y-auto h-full">
+          <EntryTable entries={selectedGroup.entries} openEntry={showEntryDetails} onEntrySelected={(entry) => setSelectedEntry(entry)} onDeleteEntry={doDeleteEntry}/>
         </div>
       </div>
       {entryDetails}

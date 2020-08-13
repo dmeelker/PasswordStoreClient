@@ -5,6 +5,16 @@
 @import "tailwindcss/utilities";
 
 
+/* Links */
+a {
+    @apply text-orange-600;
+}
+
+a:hover {
+    @apply text-green-600;
+}
+
+/* Buttons */
 .btn {
     @apply bg-gray-200 px-6 py-2 rounded border-gray-100 mx-1;
 }
@@ -48,7 +58,6 @@ input[type="text"]:focus, input[type="password"]:focus {
 
 
 /* Table */
-
 table {
     @apply rounded shadow;
 }

@@ -10,7 +10,7 @@ export interface GroupListProps {
 export function GroupList(props: GroupListProps) {
   return (<div className="group-list">
     {props.groups.map((group, index) => (
-      <button className="btn block mb-2" key={group.id} onClick={() => props.selectionChangedHandler(group)}>{group.name}</button>
+      <button className="w-full text-left px-4 py-2 hover:bg-green-200 focus:bg-green-200" key={group.id} onClick={() => props.selectionChangedHandler(group)}>{group.name}</button>
     ))}
   </div>);
 }
