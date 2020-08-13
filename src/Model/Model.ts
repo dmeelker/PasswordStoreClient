@@ -8,6 +8,7 @@ export class ApplicationModel {
 
 export class PasswordGroup {
     public id: string = uuid();
+    public groups = new Array<PasswordGroup>();
     public entries = new Array<PasswordEntry>();
 
     constructor (public name: string) {

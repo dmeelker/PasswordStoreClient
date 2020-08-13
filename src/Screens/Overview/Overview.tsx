@@ -66,20 +66,23 @@ export function Overview() {
   }
 
   return (
-    <div className="h-full flex flex-col">
-      <div className="py-4">
-        <button className="btn-toolbar" onClick={createNewGroup}>Add Group</button>
-        <button className="btn-toolbar" onClick={createNewEntry}>Add Entry</button>
-      </div>
-      <div className="flex-1 flex overflow-hidden px-4 pb-4">
-        <div className="w-1/4 mr-4">
-          <GroupList groups={groups} selectedGroup={selectedGroup} selectionChangedHandler={(newSelection => setSelectedGroup(newSelection))} />
+    <div className="p-4 h-full">
+      <div className="p-4 box-border shadow bg-white border-size h-full flex flex-col">
+        <div className="py-4">
+          <button className="btn-toolbar" onClick={createNewGroup}>Add Group</button>
+          <button className="btn-toolbar" onClick={createNewEntry}>Add Entry</button>
+          <input type="text" className="text-input" placeholder="search"/>
         </div>
-        <div className="flex-1 overflow-y-auto h-full">
-          <EntryTable entries={selectedGroup.entries} openEntry={showEntryDetails} onEntrySelected={(entry) => setSelectedEntry(entry)} onDeleteEntry={doDeleteEntry}/>
+        <div className="flex-1 flex overflow-hidden">
+          <div className="w-1/4 mr-4">
+            <GroupList groups={groups} selectedGroup={selectedGroup} onGroupSelected={(newSelection => setSelectedGroup(newSelection))} />
+          </div>
+          <div className="flex-1 overflow-y-auto h-full">
+            <EntryTable entries={selectedGroup.entries} openEntry={showEntryDetails} onEntrySelected={(entry) => setSelectedEntry(entry)} onDeleteEntry={doDeleteEntry}/>
+          </div>
         </div>
+        {entryDetails}
       </div>
-      {entryDetails}
     </div>
   );
 }

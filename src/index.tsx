@@ -30,7 +30,7 @@ let group2 = new PasswordGroup("Group 2");
 let group3 = new PasswordGroup("Group 3");
 
 ApplicationModel.instance.groups.push(group1);
-ApplicationModel.instance.groups.push(group2);
+group1.groups.push(group2);
 ApplicationModel.instance.groups.push(group3);
 
 ReactDOM.render(

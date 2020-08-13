@@ -49,31 +49,33 @@ export function EntryDetails(props: EntryDetailsProp) {
     const oddRowStyle = baseRowStyle + " bg-gray-100";
     const evenRowStyle = baseRowStyle + " bg-white";
 
+    const popupStyle = {width: 600};
+
     return (
-        <div className="m-auto w-3/5 my-10 bg-white shadow overflow-hidden sm:rounded-lg">
+        <div style={popupStyle}>
             <form onSubmit={onFormSubmit}>
                 <div className="leading-8">
                     <div className={oddRowStyle}>
                         <label className="">Name</label>
-                        <input type="text" name="name" className="col-span-3" defaultValue={props.entry.name} autoComplete="off" ref={firstField}/>
+                        <input type="text" name="name" className="text-input col-span-3" defaultValue={props.entry.name} autoComplete="off" ref={firstField}/>
                     </div>
 
                     <div className={evenRowStyle}>
                         <label className="">URL</label>
-                        <input type="text" name="url" className="col-span-3" defaultValue={props.entry.url} autoComplete="off"/>
+                        <input type="text" name="url" className="text-input col-span-3" defaultValue={props.entry.url} autoComplete="off"/>
                     </div>
 
                     <div className={oddRowStyle}>
                         <label className="">User name</label>
-                        <input type="text" name="username" className="col-span-3" defaultValue={props.entry.username} autoComplete="off"/>
+                        <input type="text" name="username" className="text-input col-span-3" defaultValue={props.entry.username} autoComplete="off"/>
                     </div>
 
                     <div className={evenRowStyle}>
                         <label className="">Password</label>
                         <div className="col-span-3">
-                            <input type={showPassword ? "text": "password"} name="password" className="w-full" value={password} onChange={()=>{}} />
+                            <input type={showPassword ? "text": "password"} name="password" className="text-input w-full" value={password} onChange={(event)=>{ setPassword(event.target.value)}} />
                             
-                            <button type="button" className="btn" onClick={togglePasswordShown}>{showPassword ? "Hide" : "Show"}</button>
+                            <button type="button" className="btn" onClick={togglePasswordShown}><i className="far fa-eye"></i></button>
                             <button type="button" className="btn" onClick={generatePassword}>Generate</button>
                         </div>
                     </div>

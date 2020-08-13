@@ -28,13 +28,14 @@ export function EntryTable(props: EntryTableProps) {
 
     rows.push(
       <tr key={item.id}>
-        <td>{item.group.name}</td>
-        <td onClick={() => props.onEntrySelected(item)}>{name}</td>
-        <td onClick={() => props.onEntrySelected(item)}>{item.username}</td>
-        <td>
-          <button className="btn" onClick={() => props.openEntry(item)}>O</button>
-          <button className="btn" onClick={() => copyToClipboard(item)}>C</button>
-          <button className="btn" onClick={() => props.onDeleteEntry(item)}>D</button>
+        <td className="leading-10">{item.group.name}</td>
+        <td onClick={() => props.onEntrySelected(item)} className="leading-10">{name}</td>
+        <td onClick={() => props.onEntrySelected(item)} className="leading-10">{item.username}
+            <div className="float-right">
+              <button className="btn-icon" onClick={() => props.openEntry(item)}><i className="far fa-edit"></i></button>
+              <button className="btn-icon" onClick={() => copyToClipboard(item)}><i className="far fa-copy"></i></button>
+              <button className="btn-icon" onClick={() => props.onDeleteEntry(item)}><i className="far fa-trash-alt"></i></button>
+            </div>
         </td>
       </tr>
     );
@@ -46,8 +47,7 @@ export function EntryTable(props: EntryTableProps) {
         <tr>
           <th className="w-1/6">Group</th>
           <th className="w-1/6">Name</th>
-          <th className="w-2/6">User name</th>
-          <th className=""></th>
+          <th className="">User name</th>
         </tr>
       </thead>
       <tbody>
