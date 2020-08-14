@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { PasswordEntry } from '../../Model/Model';
 import { GeneratePassword } from '../../Services/PasswordGenerator';
+import { conditionalClass, alternatingClass } from '../../RenderHelpers';
 
 interface EntryDetailsProp {
     entry: PasswordEntry;
@@ -9,7 +10,7 @@ interface EntryDetailsProp {
 }
 
 export function EntryDetails(props: EntryDetailsProp) {
-    let entry = props.entry;
+    const entry = props.entry;
     const [showPassword, setShowPassword] = React.useState(false);
     const [password, setPassword] = React.useState(entry.password);
     const firstField = React.useRef<HTMLInputElement>(null);
@@ -18,7 +19,7 @@ export function EntryDetails(props: EntryDetailsProp) {
         firstField.current?.focus();
     }, []);
 
-    const onFormSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    function onFormSubmit(event: React.FormEvent<HTMLFormElement>) {
         event.preventDefault();
         
         const formData = new FormData(event.target as HTMLFormElement);
@@ -29,62 +30,68 @@ export function EntryDetails(props: EntryDetailsProp) {
         props.savePressed();
     };
 
-    const cancelButtonPressed = (event: React.MouseEvent) => {
-        event.preventDefault();
+    function cancelButtonPressed(event: React.MouseEvent) {
         props.cancelPressed();
+        event.preventDefault();
     };
 
-    const togglePasswordShown = (event: React.MouseEvent) => {
+    function togglePasswordShown(event: React.MouseEvent) {
         setShowPassword(!showPassword);
         event.preventDefault();
     };
 
-    const generatePassword = (event: React.MouseEvent) => {
+    function generatePassword(event: React.MouseEvent) {
         const password = GeneratePassword({minLength: 32});
         setPassword(password);
         event.preventDefault();
     };
 
-    const baseRowStyle = "px-4 py-5 grid grid-cols-4 gap-4";
-    const oddRowStyle = baseRowStyle + " bg-gray-100";
-    const evenRowStyle = baseRowStyle + " bg-white";
-
-    const popupStyle = {width: 600};
+    let rowIndex = 0;
 
     return (
-        <div style={popupStyle}>
+        <div style={{width: 600}}>
             <form onSubmit={onFormSubmit}>
                 <div className="leading-8">
-                    <div className={oddRowStyle}>
-                        <label className="">Name</label>
-                        <input type="text" name="name" className="text-input col-span-3" defaultValue={props.entry.name} autoComplete="off" ref={firstField}/>
-                    </div>
+                    <FormRow index={rowIndex++} label="Name">
+                        <input type="text" name="name" className="text-input w-full" defaultValue={props.entry.name} autoComplete="off" ref={firstField} required/>
+                    </FormRow>
 
-                    <div className={evenRowStyle}>
-                        <label className="">URL</label>
-                        <input type="text" name="url" className="text-input col-span-3" defaultValue={props.entry.url} autoComplete="off"/>
-                    </div>
+                    <FormRow index={rowIndex++} label="URL">
+                        <input type="url" name="url" className="text-input w-full" defaultValue={props.entry.url} autoComplete="off"/>
+                    </FormRow> 
 
-                    <div className={oddRowStyle}>
-                        <label className="">User name</label>
-                        <input type="text" name="username" className="text-input col-span-3" defaultValue={props.entry.username} autoComplete="off"/>
-                    </div>
+                    <FormRow index={rowIndex++} label="User name">
+                        <input type="text" name="username" className="text-input w-full" defaultValue={props.entry.username} autoComplete="off" required/>
+                    </FormRow>
 
-                    <div className={evenRowStyle}>
-                        <label className="">Password</label>
-                        <div className="col-span-3">
-                            <input type={showPassword ? "text": "password"} name="password" className="text-input w-full" value={password} onChange={(event)=>{ setPassword(event.target.value)}} />
-                            
-                            <button type="button" className="btn" onClick={togglePasswordShown}><i className="far fa-eye"></i></button>
-                            <button type="button" className="btn" onClick={generatePassword}>Generate</button>
-                        </div>
-                    </div>
+                    <FormRow index={rowIndex++} label="Password">
+                        <input type={showPassword ? "text": "password"} name="password" className="text-input w-full" value={password} onChange={(event)=>{ setPassword(event.target.value)}} required/>
+                        <button type="button" className="btn" onClick={togglePasswordShown}><i className="far fa-eye"></i></button>
+                        <button type="button" className="btn" onClick={generatePassword}>Generate</button>
+                    </FormRow> 
                 </div>
                 <div className="text-right m-4">
                     <button type="submit" className="btn-primary">Save</button>
                     <button type="button" className="btn-secondary" onClick={cancelButtonPressed}>Cancel</button>
                 </div>
             </form>
+        </div>
+    );
+}
+
+interface FormRowProps {
+    index: number;
+    label: string;
+    children: any;
+}
+
+function FormRow(props: FormRowProps) {
+    return (
+        <div className={"px-4 py-5 grid grid-cols-4 gap-4" + alternatingClass(props.index, "bg-white", "bg-gray-100")}>
+            <label className="">{props.label}</label>
+            <div className="col-span-3">
+                {props.children}
+            </div>
         </div>
     );
 }

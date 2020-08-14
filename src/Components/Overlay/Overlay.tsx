@@ -1,5 +1,4 @@
 import React from "react";
-//import "./Overlay.scss";
 
 export interface OverlayProps {
     children: any;

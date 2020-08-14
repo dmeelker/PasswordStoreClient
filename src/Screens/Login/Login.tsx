@@ -26,12 +26,9 @@ export function Login(props: LoginProps) {
         button = <input type="submit" value="Log in" className="btn btn-primary w-full rounded-full mx-0"/>
     }
 
-
-    const panelStyle = {width: 500};
-
     return (
         <div className="h-full flex">
-        <div className="bg-white shadow p-4 m-auto px-20 py-16" style={panelStyle}>
+        <div className="bg-white shadow p-4 m-auto px-20 py-16" style={{width: 500}}>
             <form onSubmit={handleSubmit}>
                 <div className="text-l leading-10 ">
                     <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} placeholder="User name" className="block w-full border border-gray-500 rounded-t-lg px-2 focus:outline-none text-center box-border"/>

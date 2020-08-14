@@ -8,7 +8,6 @@ import { EntryDetails } from './EntryDetails';
 export function Overview() {
   const [groups, setGroups] = useState(ApplicationModel.instance.groups);
   const [selectedGroup, setSelectedGroup] = useState(groups[0]);
-  const [selectedEntry, setSelectedEntry] = useState<PasswordEntry>();
   const [openEntry, setOpenEntry] = useState<PasswordEntry>();
   const [createMode, setCreateMode] = useState(false);
 
@@ -75,10 +74,18 @@ export function Overview() {
         </div>
         <div className="flex-1 flex overflow-hidden">
           <div className="w-1/4 mr-4">
-            <GroupList groups={groups} selectedGroup={selectedGroup} onGroupSelected={(newSelection => setSelectedGroup(newSelection))} />
+            <GroupList 
+              groups={groups} 
+              selectedGroup={selectedGroup} 
+              onGroupSelected={newSelection => setSelectedGroup(newSelection)} 
+            />
           </div>
           <div className="flex-1 overflow-y-auto h-full">
-            <EntryTable entries={selectedGroup.entries} openEntry={showEntryDetails} onEntrySelected={(entry) => setSelectedEntry(entry)} onDeleteEntry={doDeleteEntry}/>
+            <EntryTable 
+              entries={selectedGroup.entries} 
+              openEntry={showEntryDetails} 
+              onDeleteEntry={doDeleteEntry}
+            />
           </div>
         </div>
         {entryDetails}

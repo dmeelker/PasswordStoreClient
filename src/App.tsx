@@ -1,7 +1,5 @@
 import React from 'react';
-import logo, { ReactComponent } from './logo.svg';
 import './styles.css';
-import { render } from '@testing-library/react';
 import { Login } from './Screens/Login/Login';
 import { Overview } from './Screens/Overview/Overview';
 
@@ -36,12 +34,10 @@ class App extends React.Component<Props, State> {
   public render() {
     switch (this.state.activeScreen) {
       case Screen.Login:
-        return (<
-          Login loginSuccessful={() => this.loginSuccessful()} />
-        );
+        return <Login loginSuccessful={() => this.loginSuccessful()} />;
 
       case Screen.Overview:
-        return (<Overview></Overview>);
+        return <Overview/>;
     }
   }
 }

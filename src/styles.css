@@ -760,6 +760,12 @@ a:hover {
   border-color: rgba(144, 205, 244, var(--border-opacity));
 }
 
+input:invalid {
+  --border-opacity: 1;
+  border-color: #fc8181;
+  border-color: rgba(252, 129, 129, var(--border-opacity));
+}
+
 /* Table */
 
 table {

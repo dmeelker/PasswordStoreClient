@@ -76,6 +76,9 @@ a:hover {
     @apply outline-none border-blue-300;
 }
 
+input:invalid {
+    @apply border-red-400;
+}
 
 /* Table */
 table {
