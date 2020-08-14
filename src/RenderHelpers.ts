@@ -7,5 +7,5 @@ export function conditionalClass(firstClass: boolean, firstClassName: string, se
 }
 
 export function alternatingClass(index: number, oddClassName: string, evenClassName: string = ""): string {
-    return wrapClassName(index % 2 == 1 ? oddClassName : evenClassName);
+    return wrapClassName(index % 2 === 1 ? oddClassName : evenClassName);
 }

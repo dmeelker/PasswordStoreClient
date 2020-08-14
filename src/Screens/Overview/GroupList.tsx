@@ -47,7 +47,7 @@ function GroupNode(props: GroupNodeProps) {
             <i className={"fas" + conditionalClass(collapsed, "fa-chevron-right", "fa-chevron-down")}></i>
           }
         </button>
-        <button className={"flex-1 px-2 text-left rounded hover:bg-green-200 focus:bg-green-200 focus:outline-none" + conditionalClass(props.selectedGroup == props.group, "bg-green-200")} 
+        <button className={"flex-1 px-2 text-left rounded hover:bg-green-200 focus:bg-green-200 focus:outline-none" + conditionalClass(props.selectedGroup === props.group, "bg-green-200")} 
           onClick={groupSelected} 
           onDoubleClick={toggleCollapse}>{props.group.name}</button>
       </div>

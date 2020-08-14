@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { PasswordEntry } from '../../Model/Model';
 import { GeneratePassword } from '../../Services/PasswordGenerator';
-import { conditionalClass, alternatingClass } from '../../RenderHelpers';
+import { alternatingClass } from '../../RenderHelpers';
 
 interface EntryDetailsProp {
     entry: PasswordEntry;
