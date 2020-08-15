@@ -1,6 +1,7 @@
 import React from 'react';
 import { PasswordGroup } from '../../Model/Model';
 import { conditionalClass } from '../../RenderHelpers';
+import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
 
 interface GroupListProps {
   groups: Array<PasswordGroup>;
@@ -9,7 +10,7 @@ interface GroupListProps {
 }
 
 export function GroupList(props: GroupListProps) {
-  return (<div className="group-list">
+  return (<div className="group-list overflow-x-hidden">
     {props.groups.map((group) => (
       <GroupNode 
         key={group.id}
@@ -41,10 +42,10 @@ function GroupNode(props: GroupNodeProps) {
 
   return (
     <div>
-      <div className=" leading-8">
+      <div className="leading-8 whitespace-no-wrap">
         <button className="w-5 inline-block focus:outline-none" onClick={toggleCollapse}>
           {collapsible && 
-            <i className={"fas" + conditionalClass(collapsed, "fa-chevron-right", "fa-chevron-down")}></i>
+            (collapsed ? <FaChevronRight/> : <FaChevronDown/>)
           }
         </button>
         <button className={"flex-1 px-2 text-left rounded hover:bg-green-200 focus:bg-green-200 focus:outline-none" + conditionalClass(props.selectedGroup === props.group, "bg-green-200")} 

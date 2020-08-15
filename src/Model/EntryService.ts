@@ -46,10 +46,12 @@ class EntryService {
             entry.username = "piet 3";
             group2.entries.push(entry);
         }
+
+        group1.groups.push(group2);
+
         let group3 = new PasswordGroup("Group 3");
 
         groups.push(group1);
-        groups.push(group2);
         groups.push(group3);
 
         this.groups.set(this.sortGroups(groups));

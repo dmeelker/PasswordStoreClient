@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { PasswordEntry } from '../../Model/Model';
 import { GeneratePassword } from '../../Services/PasswordGenerator';
 import { alternatingClass } from '../../RenderHelpers';
+import { FaEye } from 'react-icons/fa';
 
 interface EntryDetailsProp {
     entry: PasswordEntry;
@@ -66,7 +67,7 @@ export function EntryDetails(props: EntryDetailsProp) {
 
                     <FormRow index={rowIndex++} label="Password">
                         <input type={showPassword ? "text": "password"} name="password" className="text-input w-full" value={password} onChange={(event)=>{ setPassword(event.target.value)}} required/>
-                        <button type="button" className="btn" onClick={togglePasswordShown}><i className="far fa-eye"></i></button>
+                        <button type="button" className="btn" onClick={togglePasswordShown}><FaEye/></button>
                         <button type="button" className="btn" onClick={generatePassword}>Generate</button>
                     </FormRow> 
                 </div>

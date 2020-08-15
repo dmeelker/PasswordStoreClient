@@ -1,6 +1,7 @@
 import React from 'react';
 import { PasswordEntry } from '../../Model/Model';
 import copy from 'copy-to-clipboard';
+import { FaEdit, FaCopy, FaTrashAlt } from 'react-icons/fa';
 
 export interface EntryTableProps {
   entries: Array<PasswordEntry>;
@@ -34,10 +35,10 @@ export function EntryTable(props: EntryTableProps) {
             <td className="leading-10"><EntryName entry={entry}/></td>
             <td className="leading-10">{entry.username}
                 <div className="float-right">
-                  <button className="btn-icon" onClick={() => props.openEntry(entry)} title="Edit entry"><i className="far fa-edit"></i></button>
-                  <button className="btn-icon" onClick={() => copyUsername(entry)} title="Copy user name"><i className="far fa-copy"></i></button>
-                  <button className="btn-icon" onClick={() => copyPassword(entry)} title="Copy password"><i className="far fa-copy"></i></button>
-                  <button className="btn-icon" onClick={() => props.onDeleteEntry(entry)} title="Delete entry"><i className="far fa-trash-alt"></i></button>
+                  <button className="btn-icon" onClick={() => props.openEntry(entry)} title="Edit entry"><FaEdit/></button>
+                  <button className="btn-icon" onClick={() => copyUsername(entry)} title="Copy user name"><FaCopy/></button>
+                  <button className="btn-icon" onClick={() => copyPassword(entry)} title="Copy password"><FaCopy/></button>
+                  <button className="btn-icon" onClick={() => props.onDeleteEntry(entry)} title="Delete entry"><FaTrashAlt/></button>
                 </div>
             </td>
           </tr>
