@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PasswordGroup, PasswordEntry } from '../../Model/Model';
-import { Overlay } from '../../Components/Overlay/Overlay';
+import { Overlay } from '../../Components/Overlay';
 import { EntryTable } from './EntryTable';
 import { GroupList } from './GroupList';
 import { EntryDetails } from './EntryDetails';

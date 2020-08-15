@@ -2,6 +2,7 @@ import React from 'react';
 import { PasswordEntry } from '../../Model/Model';
 import copy from 'copy-to-clipboard';
 import { FaEdit, FaCopy, FaTrashAlt } from 'react-icons/fa';
+import NotificationService from '../../Model/NotificationService';
 
 export interface EntryTableProps {
   entries: Array<PasswordEntry>;
@@ -13,10 +14,12 @@ export interface EntryTableProps {
 export function EntryTable(props: EntryTableProps) {
   function copyUsername(entry: PasswordEntry) {
     copy(entry.username);
+    NotificationService.showNotification("User name copied!");
   };
 
   function copyPassword(entry: PasswordEntry) {
     copy(entry.password);
+    NotificationService.showNotification("Password copied!");
   };
 
   return (
@@ -32,7 +35,7 @@ export function EntryTable(props: EntryTableProps) {
         {props.entries.map((entry) => 
           <tr key={entry.id}>
             {props.showGroup && <td className="leading-10">{entry.group.name}</td>}
-            <td className="leading-10"><EntryName entry={entry}/></td>
+            <td className="leading-10 hover:bg-blue-100"><EntryName entry={entry}/></td>
             <td className="leading-10">{entry.username}
                 <div className="float-right">
                   <button className="btn-icon" onClick={() => props.openEntry(entry)} title="Edit entry"><FaEdit/></button>

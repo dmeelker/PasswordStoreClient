@@ -3,6 +3,7 @@ import './styles.css';
 import { Login } from './Screens/Login/Login';
 import { Overview } from './Screens/Overview/Overview';
 import EntryService from './Model/EntryService';
+import { AppNotifications } from './Components/AppNotifications';
 
 enum Screen {
   Login,
@@ -36,6 +37,13 @@ class App extends React.Component<Props, State> {
   }
 
   public render() {
+    return <>
+      <AppNotifications/>
+      {this.renderCurrentScreen()}
+    </>
+  }
+
+  private renderCurrentScreen() {
     switch (this.state.activeScreen) {
       case Screen.Login:
         return <Login loginSuccessful={() => this.loginSuccessful()} />;
