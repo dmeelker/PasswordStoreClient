@@ -2,6 +2,7 @@ import React from 'react';
 import './styles.css';
 import { Login } from './Screens/Login/Login';
 import { Overview } from './Screens/Overview/Overview';
+import EntryService from './Model/EntryService';
 
 enum Screen {
   Login,
@@ -20,12 +21,15 @@ class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
+    EntryService.load();
+
     this.state = {
       activeScreen: Screen.Overview
     };
   }
 
   loginSuccessful() {
+    
     this.setState({
       activeScreen: Screen.Overview
     });

@@ -1,11 +1,5 @@
 import {v4 as uuid} from "uuid";
 
-export class ApplicationModel {
-    public groups = new Array<PasswordGroup>();
-
-    public static instance = new ApplicationModel();
-};
-
 export class PasswordGroup {
     public id: string = uuid();
     public groups = new Array<PasswordGroup>();

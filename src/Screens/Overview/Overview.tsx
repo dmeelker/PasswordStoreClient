@@ -1,34 +1,16 @@
 import React, { useState } from 'react';
-import { PasswordGroup, ApplicationModel, PasswordEntry } from '../../Model/Model';
+import { PasswordGroup, PasswordEntry } from '../../Model/Model';
 import { Overlay } from '../../Components/Overlay/Overlay';
 import { EntryTable } from './EntryTable';
 import { GroupList } from './GroupList';
 import { EntryDetails } from './EntryDetails';
-
-function searchEntries(groups: PasswordGroup[], searchTerms: string): PasswordEntry[] {
-  const matches = new Array<PasswordEntry>();
-  const expression = new RegExp(searchTerms, "i")
-
-  for (let group of groups) {
-    searchGroup(group, expression, (entry) => matches.push(entry));
-  }
-
-  return matches.sort((a, b) => a.name.localeCompare(b.name));
-}
-
-function searchGroup(group: PasswordGroup, expression: RegExp, matchHandler: (entry: PasswordEntry) => any) {
-    const entries = group.entries.filter((entry) => entry.name.match(expression));
-    for(let entry of entries) {
-      matchHandler(entry);
-    }
-
-    for(let child of group.groups) {
-      searchGroup(child, expression, matchHandler);
-    }
-}
+import { searchEntries } from '../../Model/EntrySearching';
+import { useObservable } from '../../Model/Observable';
+import entryService from '../../Model/EntryService';
 
 export function Overview() {
-  const [groups, setGroups] = useState(ApplicationModel.instance.groups);
+  const groups = useObservable(entryService.groups);
+
   const [selectedGroup, setSelectedGroup] = useState(groups[0]);
   const [openEntry, setOpenEntry] = useState<PasswordEntry>();
   const [createMode, setCreateMode] = useState(false);
@@ -39,12 +21,16 @@ export function Overview() {
     //showEntryDetails(selectedGroup.entries[0]);
 
   function createNewGroup(){
-    let newGroupName = prompt("What should the new group be called?");
+    const newGroupName = prompt("What should the new group be called?");
 
     if (newGroupName) {
-      let newGroups = groups.slice();
-      newGroups.push(new PasswordGroup(newGroupName));
-      setGroups(newGroups);
+      const newGroup = new PasswordGroup(newGroupName);
+
+      if(selectedGroup) {
+        entryService.addSubGroup(newGroup, selectedGroup);
+      } else {
+        entryService.add(newGroup);
+      }
     }
   }
 
