@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { PasswordEntry } from '../../Model/Model';
 import { GeneratePassword } from '../../Services/PasswordGenerator';
-import { alternatingClass } from '../../RenderHelpers';
+import { alternatingClass } from '../../Utilities/RenderHelpers';
 import { FaEye } from 'react-icons/fa';
 
 interface EntryDetailsProp {

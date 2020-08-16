@@ -1,38 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { PasswordEntry } from '../../Model/Model';
 import copy from 'copy-to-clipboard';
 import { FaEdit, FaCopy, FaTrashAlt } from 'react-icons/fa';
 import NotificationService from '../../Model/NotificationService';
-import { conditionalClass } from '../../RenderHelpers';
+import { conditionalClass } from '../../Utilities/RenderHelpers';
+import { useGlobalKeyboardListener } from '../../Utilities/Hooks';
 
 export interface EntryTableProps {
   entries: Array<PasswordEntry>;
   showGroup: boolean;
-  //onEntrySelected: (entry: PasswordEntry) => void;
   openEntry: (entry: PasswordEntry) => void;
   onDeleteEntry: (entry: PasswordEntry) => void;
 }
 
 export function EntryTable(props: EntryTableProps) {
+  const selectionTrap = useRef<HTMLInputElement>(null);
+  const [tableInFocus, setTableInFocus] = useState(false);
   const [selectedEntry, setSelectedEntry] = useState<PasswordEntry>();
 
-  useEffect(() => {
-    const eventHandler = (event: KeyboardEvent) => {
-      if (selectedEntry) {
-        if(event.code === "KeyC" && event.ctrlKey) {
-          copyPassword(selectedEntry);
-        } else if(event.code === "KeyB" && event.ctrlKey) {
-          copyUsername(selectedEntry);
-        }
+  useGlobalKeyboardListener((event: KeyboardEvent) => {
+    if (selectedEntry && document.activeElement === selectionTrap.current) {
+      if(event.code === "KeyC" && event.ctrlKey) {
+        copyPassword(selectedEntry);
+      } else if(event.code === "KeyB" && event.ctrlKey) {
+        copyUsername(selectedEntry);
       }
-    };
-
-    window.document.addEventListener("keyup", eventHandler);
-
-    return () => {
-      window.document.removeEventListener("keyup", eventHandler);
-    };
+    }
   });
+
+  useEffect(() => {
+    setSelectedEntry(undefined);
+  }, [props.entries]);
 
   function copyUsername(entry: PasswordEntry) {
     copy(entry.username);
@@ -46,10 +44,14 @@ export function EntryTable(props: EntryTableProps) {
 
   function selectEntry(entry: PasswordEntry) {
     setSelectedEntry(entry);
-    //props.onEntrySelected(entry);
+    selectionTrap.current?.focus();
   }
 
-  return (
+  function renderCell(entry: PasswordEntry, content: JSX.Element) {
+    return <td className={"leading-10" + conditionalClass(tableInFocus && selectedEntry === entry, "bg-blue-200")} onClick={() => selectEntry(entry)}>{content}</td>
+  }
+
+  return (<>
     <table className="w-full">
       <thead>
         <tr>
@@ -61,20 +63,23 @@ export function EntryTable(props: EntryTableProps) {
       <tbody>
         {props.entries.map((entry) => 
           <tr key={entry.id}>
-            {props.showGroup && <td className={"leading-10" + conditionalClass(selectedEntry === entry, "bg-blue-100")} onClick={() => selectEntry(entry)}>{entry.group.name}</td>}
-            <td className={"leading-10" + conditionalClass(selectedEntry === entry, "bg-blue-100")} onClick={() => selectEntry(entry)}><EntryName entry={entry}/></td>
-            <td className={"leading-10" + conditionalClass(selectedEntry === entry, "bg-blue-100")} onClick={() => selectEntry(entry)}>{entry.username}
-                <div className="float-right">
+            {props.showGroup && renderCell(entry, <>{entry.group.name}</>)}
+            {renderCell(entry, <EntryName entry={entry}/>)}
+            {renderCell(entry, <>
+              {entry.username}
+              <div className="float-right">
                   <button className="btn-icon" onClick={() => props.openEntry(entry)} title="Edit entry"><FaEdit/></button>
-                  <button className="btn-icon" onClick={() => copyUsername(entry)} title="Copy user name"><FaCopy/></button>
-                  <button className="btn-icon" onClick={() => copyPassword(entry)} title="Copy password"><FaCopy/></button>
+                  <button className="btn-icon" onClick={() => copyUsername(entry)} title="Copy user name (Ctrl+B)"><FaCopy/></button>
+                  <button className="btn-icon" onClick={() => copyPassword(entry)} title="Copy password (Ctrl+C)"><FaCopy/></button>
                   <button className="btn-icon" onClick={() => props.onDeleteEntry(entry)} title="Delete entry"><FaTrashAlt/></button>
                 </div>
-            </td>
+            </>)}
           </tr>
         )}
       </tbody>
     </table>
+    <input type="checkbox" ref={selectionTrap} onFocus={() => setTableInFocus(true)} onBlur={() => setTableInFocus(false)} className="absolute w-0 h-0"/>
+    </>
   );
 }
 

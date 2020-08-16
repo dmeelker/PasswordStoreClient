@@ -1,6 +1,6 @@
 import React from 'react';
 import { PasswordGroup } from '../../Model/Model';
-import { conditionalClass } from '../../RenderHelpers';
+import { conditionalClass } from '../../Utilities/RenderHelpers';
 import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
 
 interface GroupListProps {
