@@ -2,6 +2,7 @@ import React from 'react';
 import { PasswordGroup } from '../../Model/Model';
 import { conditionalClass } from '../../Utilities/RenderHelpers';
 import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
+import EntryService from '../../Model/EntryService';
 
 interface GroupListProps {
   groups: Array<PasswordGroup>;
@@ -40,6 +41,35 @@ function GroupNode(props: GroupNodeProps) {
     setCollapsed(!collapsed);
   };
 
+  function onDragStart(event: React.DragEvent) {
+    console.log("START!");
+    event.dataTransfer.setData("text/plain", props.group.id);
+  }
+
+  function onDragEnter(event: React.DragEvent) {
+    event.preventDefault();
+    const element = event.target as HTMLElement;
+    element.classList.add("border-2", "border-green-800");
+    console.log("over!");
+  }
+
+
+  function onDragExit(event: React.DragEvent) {
+    event.preventDefault();
+    const element = event.target as HTMLElement;
+    element.classList.remove("border-2", "border-green-800");
+    console.log("onDragExit!");
+  }
+
+  function onDrop(event: React.DragEvent, group: PasswordGroup) {
+    event.preventDefault();
+    
+    var data = event.dataTransfer.getData("text");
+    event.dataTransfer.clearData();
+    EntryService.moveGroup(data, group.id)
+    console.log("drop! " + data);
+  }
+
   return (
     <div>
       <div className="leading-8 whitespace-no-wrap">
@@ -48,7 +78,7 @@ function GroupNode(props: GroupNodeProps) {
             (collapsed ? <FaChevronRight/> : <FaChevronDown/>)
           }
         </button>
-        <button className={"flex-1 px-2 text-left rounded hover:bg-green-200 focus:bg-green-200 focus:outline-none" + conditionalClass(props.selectedGroup === props.group, "bg-green-200")} 
+        <button draggable="true" onDragStart={onDragStart} onDragEnter={onDragEnter} onDragLeave={onDragExit} onDrop={(e) => onDrop(e, props.group)} className={"flex-1 px-2 text-left rounded hover:bg-green-200 focus:bg-green-200 focus:outline-none" + conditionalClass(props.selectedGroup === props.group, "bg-green-200")} 
           onClick={groupSelected} 
           onDoubleClick={toggleCollapse}>{props.group.name}</button>
       </div>

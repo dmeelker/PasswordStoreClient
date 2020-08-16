@@ -13,6 +13,10 @@ class EntryService {
         this.notifyListeners();
     }
 
+    public moveGroup(groupId: string, targetGroupId: string) {
+        console.log(`Move ${groupId} to ${targetGroupId}`);
+    }
+
     private notifyListeners() {
         this.groups.set([...this.groups.get()]);
     }
