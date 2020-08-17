@@ -1,14 +1,20 @@
 import { PasswordGroup, PasswordEntry } from "./Model";
 import { Observable } from "./Observable";
-
-type GroupVisitor = (group: PasswordGroup) => void;
+import NotificationService from "./NotificationService";
 
 class EntryService {
     readonly root = new Observable<PasswordGroup>(new PasswordGroup("root"));
 
-    public addSubGroup(newGroup: PasswordGroup, parent: PasswordGroup) {
+    public addSubGroup(newGroup: PasswordGroup, targetGroupId: string) {
+        const newRoot = this.root.get().clone();
+        const parent = newRoot.findGroupById(targetGroupId);
+
+        if(parent === null)
+            return;
+
         parent.addGroup(newGroup);
-        this.notifyListeners();
+        this.root.set(newRoot);
+        this.modelChanged();
     }
 
     public moveGroup(groupId: string, targetGroupId: string) {
@@ -19,10 +25,7 @@ class EntryService {
         if (group === null || targetGroup === null)
             return;
 
-        if (group === targetGroup)
-            return;
-
-        if (group.containsGroup(targetGroup))
+        if (!this.canGroupBeMoved(group, targetGroup))
             return;
 
         if(group.parent !== undefined)
@@ -31,7 +34,20 @@ class EntryService {
         targetGroup.addGroup(group);
         
         this.root.set(newRoot);
-        console.log(`Move ${groupId} to ${targetGroupId}`);
+        this.modelChanged();
+    }
+
+    private canGroupBeMoved(groupToMove: PasswordGroup, targetGroup: PasswordGroup) {
+        if (groupToMove === targetGroup)
+            return false;
+
+        if (groupToMove.containsGroup(targetGroup))
+            return false;
+
+        if (groupToMove.parent === targetGroup)
+            return false;
+
+        return true;
     }
 
     public addEntry(entry: PasswordEntry, groupId: string) {
@@ -41,6 +57,7 @@ class EntryService {
         if(targetGroup !== null) {
             targetGroup.add(entry);
             this.root.set(newRoot);
+            this.modelChanged();
         }
     }
 
@@ -56,6 +73,7 @@ class EntryService {
         group.add(updatedEntry);
 
         this.root.set(newRoot);
+        this.modelChanged();
     }
 
     public removeEntry(entryId: string) {
@@ -68,10 +86,7 @@ class EntryService {
         const group = entry.group;
         group.remove(entry);
         this.root.set(newRoot);
-    }
-
-    private notifyListeners() {
-        this.root.set(this.root.get().clone());
+        this.modelChanged();
     }
 
     public load() {
@@ -106,7 +121,15 @@ class EntryService {
 
         root.addGroup(group1);
         root.addGroup(group3);
+
+        for(let i=4; i<100; i++)
+            root.addGroup(new PasswordGroup("Group " + i));
+
         this.root.set(root);
+    }
+
+    private modelChanged() {
+        NotificationService.showNotification("Changes saved");
     }
 
     public findGroupById(id: string) : PasswordGroup | null {
@@ -115,6 +138,19 @@ class EntryService {
 
     public findEntryById(id: string) : PasswordEntry | null {
         return this.root.get().findEntryById(id);
+    }
+
+    public searchEntries(searchTerms: string): PasswordEntry[] {
+        const matches = new Array<PasswordEntry>();
+        const expression = new RegExp(searchTerms, "i")
+    
+        this.root.get().visitEntries(this.root.get(), (entry) => {
+            if(entry.name.match(expression)) {
+                matches.push(entry);
+            }
+        })
+
+        return matches.sort((a, b) => a.name.localeCompare(b.name));
     }
 }
 

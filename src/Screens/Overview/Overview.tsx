@@ -4,7 +4,6 @@ import { Overlay } from '../../Components/Overlay';
 import { EntryTable } from './EntryTable';
 import { GroupList } from './GroupList';
 import { EntryDetails } from './EntryDetails';
-import { searchEntries } from '../../Model/EntrySearching';
 import { useObservable } from '../../Model/Observable';
 import EntryService from '../../Model/EntryService';
 
@@ -25,7 +24,7 @@ export function Overview() {
 
     if (newGroupName) {
       const newGroup = new PasswordGroup(newGroupName);
-      EntryService.addSubGroup(newGroup, selectedGroup ?? groups);
+      EntryService.addSubGroup(newGroup, (selectedGroup ?? groups).id);
     }
   }
 
@@ -79,7 +78,7 @@ export function Overview() {
     const searchTerms = (event.target as HTMLInputElement).value.trim();
 
     if(searchTerms.length > 0) {
-      setSearchResults(searchEntries(groups, searchTerms));
+      setSearchResults(EntryService.searchEntries(searchTerms));
     } else {
       setSearchResults(undefined);
     }
@@ -103,7 +102,7 @@ export function Overview() {
           <input type="search" className="text-input" placeholder="search" value={searchTerms} onChange={(e) => setSearchTerms(e.target.value)} onInput={searchTermsChanged}/>
         </div>
         <div className="flex-1 flex overflow-hidden">
-          <div className="w-1/4 mr-4">
+          <div className="w-1/4 mr-4 overflow-y-auto">
             <GroupList 
               groups={groups} 
               selectedGroup={selectedGroup} 

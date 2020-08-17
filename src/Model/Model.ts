@@ -84,12 +84,12 @@ export class PasswordGroup {
         return entry;
     }
 
-    private visitGroup(group: PasswordGroup, visitor: GroupVisitor) {
+    public visitGroup(group: PasswordGroup, visitor: GroupVisitor) {
         visitor(group);
         group.groups.forEach((g) => this.visitGroup(g, visitor));
     }
 
-    private visitEntries(group: PasswordGroup, visitor: EntryVisitor) {
+    public visitEntries(group: PasswordGroup, visitor: EntryVisitor) {
         group.entries.forEach(visitor);
         group.groups.forEach((g) => this.visitEntries(g, visitor));
     }
