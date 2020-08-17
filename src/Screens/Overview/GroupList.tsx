@@ -5,21 +5,19 @@ import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import EntryService from '../../Model/EntryService';
 
 interface GroupListProps {
-  groups: Array<PasswordGroup>;
+  groups: PasswordGroup;
   selectedGroup: PasswordGroup;
   onGroupSelected: (newSelection: PasswordGroup) => any;
 }
 
 export function GroupList(props: GroupListProps) {
   return (<div className="group-list overflow-x-hidden">
-    {props.groups.map((group) => (
       <GroupNode 
-        key={group.id}
-        group={group}
+        key={props.groups.id}
+        group={props.groups}
         selectedGroup={props.selectedGroup} 
         onGroupSelected={props.onGroupSelected}
       />
-    ))}
   </div>);
 }
 
@@ -42,32 +40,35 @@ function GroupNode(props: GroupNodeProps) {
   };
 
   function onDragStart(event: React.DragEvent) {
-    console.log("START!");
     event.dataTransfer.setData("text/plain", props.group.id);
+    event.dataTransfer.dropEffect = "move";
   }
 
   function onDragEnter(event: React.DragEvent) {
     event.preventDefault();
     const element = event.target as HTMLElement;
     element.classList.add("border-2", "border-green-800");
-    console.log("over!");
   }
 
+  function onDragOver(event: React.DragEvent) {
+    event.preventDefault();
+  }
 
   function onDragExit(event: React.DragEvent) {
     event.preventDefault();
     const element = event.target as HTMLElement;
     element.classList.remove("border-2", "border-green-800");
-    console.log("onDragExit!");
   }
 
   function onDrop(event: React.DragEvent, group: PasswordGroup) {
     event.preventDefault();
     
+    const element = event.target as HTMLElement;
+    element.classList.remove("border-2", "border-green-800");
+
     var data = event.dataTransfer.getData("text");
     event.dataTransfer.clearData();
     EntryService.moveGroup(data, group.id)
-    console.log("drop! " + data);
   }
 
   return (
@@ -78,7 +79,7 @@ function GroupNode(props: GroupNodeProps) {
             (collapsed ? <FaChevronRight/> : <FaChevronDown/>)
           }
         </button>
-        <button draggable="true" onDragStart={onDragStart} onDragEnter={onDragEnter} onDragLeave={onDragExit} onDrop={(e) => onDrop(e, props.group)} className={"flex-1 px-2 text-left rounded hover:bg-green-200 focus:bg-green-200 focus:outline-none" + conditionalClass(props.selectedGroup === props.group, "bg-green-200")} 
+        <button draggable="true" onDragStart={onDragStart} onDragEnter={onDragEnter} onDragOver={onDragOver} onDragLeave={onDragExit} onDrop={(e) => onDrop(e, props.group)} className={"flex-1 px-2 text-left rounded hover:bg-green-200 focus:bg-green-200 focus:outline-none" + conditionalClass(props.selectedGroup === props.group, "bg-green-200")} 
           onClick={groupSelected} 
           onDoubleClick={toggleCollapse}>{props.group.name}</button>
       </div>

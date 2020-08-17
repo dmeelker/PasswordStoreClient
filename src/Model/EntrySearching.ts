@@ -1,13 +1,10 @@
 import { PasswordGroup, PasswordEntry } from "./Model";
 
-export function searchEntries(groups: PasswordGroup[], searchTerms: string): PasswordEntry[] {
+export function searchEntries(group: PasswordGroup, searchTerms: string): PasswordEntry[] {
     const matches = new Array<PasswordEntry>();
     const expression = new RegExp(searchTerms, "i")
 
-    for (let group of groups) {
-        searchGroup(group, expression, (entry) => matches.push(entry));
-    }
-
+    searchGroup(group, expression, (entry) => matches.push(entry));
     return matches.sort((a, b) => a.name.localeCompare(b.name));
 }
 

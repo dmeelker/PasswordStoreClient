@@ -6,12 +6,12 @@ import { GroupList } from './GroupList';
 import { EntryDetails } from './EntryDetails';
 import { searchEntries } from '../../Model/EntrySearching';
 import { useObservable } from '../../Model/Observable';
-import entryService from '../../Model/EntryService';
+import EntryService from '../../Model/EntryService';
 
 export function Overview() {
-  const groups = useObservable(entryService.groups);
+  const groups = useObservable(EntryService.root);
 
-  const [selectedGroup, setSelectedGroup] = useState(groups[0]);
+  const [selectedGroup, setSelectedGroup] = useState(groups);
   const [openEntry, setOpenEntry] = useState<PasswordEntry>();
   const [createMode, setCreateMode] = useState(false);
   const [searchResults, setSearchResults] = useState<PasswordEntry[]>();
@@ -25,12 +25,7 @@ export function Overview() {
 
     if (newGroupName) {
       const newGroup = new PasswordGroup(newGroupName);
-
-      if(selectedGroup) {
-        entryService.addSubGroup(newGroup, selectedGroup);
-      } else {
-        entryService.add(newGroup);
-      }
+      EntryService.addSubGroup(newGroup, selectedGroup ?? groups);
     }
   }
 
@@ -46,25 +41,28 @@ export function Overview() {
 
   function showEntryDetails(entry: PasswordEntry, createMode: boolean = false) {
     setCreateMode(createMode);
-    setOpenEntry(entry);
+    setOpenEntry(entry.clone());
   }
 
   function doDeleteEntry(entry: PasswordEntry) {
     if (window.confirm(`Really delete entry '${entry.name}'?`)) {
-      let updatedGroup = selectedGroup.clone();
-      let entryIndex = updatedGroup.entries.indexOf(entry);
-      updatedGroup.entries.splice(entryIndex, 1);
-      setSelectedGroup(updatedGroup);
+      const parentGroupId = entry.group.id;
+      EntryService.removeEntry(entry.id);
+      setSelectedGroup(EntryService.findGroupById(parentGroupId) as PasswordGroup);
     }
   }
 
   function completeEdit() {
-    if(createMode && openEntry) {
-      let updatedGroup = selectedGroup.clone();
-      updatedGroup.add(openEntry);
-      setSelectedGroup(updatedGroup);
+    if(openEntry === undefined)
+      return;
+
+    if(createMode) {
+      EntryService.addEntry(openEntry, selectedGroup.id);
+    } else {
+      EntryService.updateEntry(openEntry);
     }
 
+    setSelectedGroup(EntryService.findGroupById(selectedGroup.id) as PasswordGroup);
     setOpenEntry(undefined);
   }
 

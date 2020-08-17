@@ -22,6 +22,10 @@ export class Observable<T> {
         }
     }
 
+    public notifyListeners() {
+        this.listeners.forEach(l => l(this.value));
+    }
+
     public addListener(listener: Listener<T>): Unsubscriber {
         this.listeners.push(listener);
 
