@@ -25,7 +25,7 @@ class App extends React.Component<Props, State> {
     EntryService.load();
 
     this.state = {
-      activeScreen: Screen.Overview
+      activeScreen: Screen.Login
     };
   }
 

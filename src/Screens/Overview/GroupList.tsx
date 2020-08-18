@@ -55,6 +55,7 @@ export function GroupList(props: GroupListProps) {
       <GroupNode 
         key={props.root.id}
         group={props.root}
+        collapsible={false}
         selectedGroup={props.selectedGroup} 
         onGroupSelected={props.onGroupSelected}
         onPopupMenu={onPopupRequested}
@@ -66,13 +67,14 @@ export function GroupList(props: GroupListProps) {
 interface GroupNodeProps {
   group: PasswordGroup;
   selectedGroup: PasswordGroup | null;
+  collapsible: boolean;
   onGroupSelected: (newSelection: PasswordGroup) => any;
   onPopupMenu: (group: PasswordGroup, x: number, y: number) => void;
 }
 
 function GroupNode(props: GroupNodeProps) {
-  const [collapsed, setCollapsed] = React.useState(true);
-  const collapsible = props.group.groups.length > 0;
+  const [collapsed, setCollapsed] = React.useState(props.collapsible);
+  const collapsible = props.collapsible && props.group.groups.length > 0;
 
   function groupSelected(){
     props.onGroupSelected(props.group);
@@ -151,13 +153,14 @@ function GroupNode(props: GroupNodeProps) {
           onDrop={(e) => onDrop(e, props.group)} 
           onClick={groupSelected} 
           onDoubleClick={toggleCollapse}
-          onContextMenu={onContextMenu}>{props.group.name}</button>
+          onContextMenu={onContextMenu}>{props.group.name} ({props.group.entries.length})</button>
       </div>
       <div className={conditionalClass(collapsed, "hidden") + "pl-4"}>
         {props.group.groups.map((child) =>
           <GroupNode 
             key={child.id} 
             group={child} 
+            collapsible={true}
             selectedGroup={props.selectedGroup}
             onGroupSelected={props.onGroupSelected}
             onPopupMenu={props.onPopupMenu}/>)

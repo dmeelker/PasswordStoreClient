@@ -1,6 +1,7 @@
 import { PasswordGroup, PasswordEntry } from "./Model";
 import { Observable } from "./Observable";
 import NotificationService from "./NotificationService";
+import { savePasswords } from "../Services/ApiService";
 
 class EntryService {
     readonly root = new Observable<PasswordGroup>(new PasswordGroup("root"));
@@ -170,7 +171,9 @@ class EntryService {
     }
 
     private modelChanged() {
-        NotificationService.showNotification("Changes saved");
+        savePasswords("123", "lala").then((result) => {
+            NotificationService.showNotification("Changes saved");
+        });
     }
 
     public findGroupById(id: string) : PasswordGroup | null {
