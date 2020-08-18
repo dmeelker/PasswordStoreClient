@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { PasswordGroup, PasswordEntry } from '../../Model/Model';
-import { Overlay } from '../../Components/Overlay';
 import { EntryTable } from './EntryTable';
 import { GroupList } from './GroupList';
 import { EntryDetails } from './EntryDetails';
 import { useObservable } from '../../Model/Observable';
 import EntryService from '../../Model/EntryService';
+import { Modal } from '../../Components/Modal';
 
 export function Overview() {
   const groups = useObservable(EntryService.root);
@@ -87,9 +87,9 @@ export function Overview() {
   let entryDetails;
   if (openEntry) {
     entryDetails = (
-      <Overlay>
+      <Modal>
         <EntryDetails entry={openEntry} savePressed={completeEdit} cancelPressed={cancelEdit}/>
-      </Overlay>
+      </Modal>
     );
   }
 

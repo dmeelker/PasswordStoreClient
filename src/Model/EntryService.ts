@@ -17,6 +17,21 @@ class EntryService {
         this.modelChanged();
     }
 
+    public renameGroup(groupId: string, newName: string) {
+        const newRoot = this.root.get().clone();
+        const group = newRoot.findGroupById(groupId);
+
+        if (group === null)
+            return;
+
+        group.name = newName;
+        if(group.parent) {
+            group.parent.sortGroups();
+        }
+        this.root.set(newRoot);
+        this.modelChanged();
+    }
+
     public moveGroup(groupId: string, targetGroupId: string) {
         const newRoot = this.root.get().clone();
         const group = newRoot.findGroupById(groupId);

@@ -56,8 +56,12 @@ export class PasswordGroup {
     }
 
     private sort() {
-        this.groups = this.groups.sort((a, b) => a.name.localeCompare(b.name));
+        this.sortGroups();
         this.entries = this.entries.sort((a, b) => a.name.localeCompare(b.name));
+    }
+
+    public sortGroups() {
+        this.groups = this.groups.sort((a, b) => a.name.localeCompare(b.name));
     }
 
     public findGroupById(id: string) : PasswordGroup | null {

@@ -3,6 +3,7 @@ import { PasswordGroup } from '../../Model/Model';
 import { conditionalClass } from '../../Utilities/RenderHelpers';
 import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import EntryService from '../../Model/EntryService';
+import { PopupMenu, MenuItem, MenuSeparator } from '../../Components/PopupMenu';
 
 interface GroupListProps {
   groups: PasswordGroup;
@@ -12,28 +13,35 @@ interface GroupListProps {
 
 interface PopupState {
   visible: boolean;
+  group: PasswordGroup;
   x: number;
   y: number;
 }
 
 export function GroupList(props: GroupListProps) {
   const [popupState, setPopupState] = useState<PopupState>();
-  let popupLocation = {x: 0, y: 0};
 
   function onPopupRequested(group: PasswordGroup, x: number, y: number) {
-    setPopupState({visible: true, x, y});
-    console.log(popupState);
+    setPopupState({visible: true, group, x, y});
   }
 
-  let popupMenu;
+  function renderPopupMenu() {
+    if(popupState?.visible) {
+      return <PopupMenu x={popupState.x} y={popupState.y} onHide={() => setPopupState(undefined)}>
+        <MenuItem label="Rename" onClick={() => {renameGroupClicked(popupState.group)}}/>
+        <MenuSeparator/>
+        <MenuItem label="Delete" onClick={() => {}}/>
+      </PopupMenu>
+    } else {
+      return null;
+    }
+  }
 
-  if(popupState?.visible) {
-    popupMenu = <div className="fixed inset-0" onClick={() => setPopupState(undefined)}>
-      <div className="absolute bg-white shadow p-2" style={{left: popupState.x, top: popupState.y}}>
-        <button className="block">Rename</button>
-        <button className="block">Delete</button>
-      </div>
-    </div>
+  function renameGroupClicked(group: PasswordGroup) {
+    const newName = window.prompt("Enter a new name!");
+
+    if(newName)
+      EntryService.renameGroup(group.id, newName);
   }
 
   return (<div className="group-list overflow-x-hidden">
@@ -44,7 +52,7 @@ export function GroupList(props: GroupListProps) {
         onGroupSelected={props.onGroupSelected}
         onPopupMenu={onPopupRequested}
       />
-      {popupMenu}
+      {renderPopupMenu()}
   </div>);
 }
 

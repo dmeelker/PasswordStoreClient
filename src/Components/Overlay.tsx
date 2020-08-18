@@ -1,15 +1,17 @@
 import React from "react";
+import { conditionalClass } from "../Utilities/RenderHelpers";
 
-export interface OverlayProps {
+interface OverlayProps {
     children: any;
+    opaque?: boolean;
+    onClick?: () => void;
 }
 
 export function Overlay(props: OverlayProps) {
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-25 w-screen h-screen flex">
-            <div className="m-auto bg-white shadow overflow-hidden sm:rounded-lg">
-                {props.children}
-            </div>
+        <div className={"fixed inset-0 w-screen h-screen flex" + conditionalClass(props.opaque ?? false, "bg-black bg-opacity-25", "")}
+            onClick={props.onClick}>
+            {props.children}
         </div>
     );
 }
