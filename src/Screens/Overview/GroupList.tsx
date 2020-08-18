@@ -4,9 +4,10 @@ import { conditionalClass } from '../../Utilities/RenderHelpers';
 import { FaChevronDown, FaChevronRight } from 'react-icons/fa';
 import EntryService from '../../Model/EntryService';
 import { PopupMenu, MenuItem, MenuSeparator } from '../../Components/PopupMenu';
+import { createDragModel, DragSource, serializeDragModel, parseDragModel } from '../../Utilities/DragModel';
 
 interface GroupListProps {
-  groups: PasswordGroup;
+  root: PasswordGroup;
   selectedGroup: PasswordGroup;
   onGroupSelected: (newSelection: PasswordGroup) => any;
 }
@@ -26,11 +27,11 @@ export function GroupList(props: GroupListProps) {
   }
 
   function renderPopupMenu() {
-    if(popupState?.visible) {
+    if(popupState?.visible && popupState.group !== props.root) {
       return <PopupMenu x={popupState.x} y={popupState.y} onHide={() => setPopupState(undefined)}>
         <MenuItem label="Rename" onClick={() => {renameGroupClicked(popupState.group)}}/>
         <MenuSeparator/>
-        <MenuItem label="Delete" onClick={() => {}}/>
+        <MenuItem label="Delete" onClick={() => {deleteGroupClicked(popupState.group)}}/>
       </PopupMenu>
     } else {
       return null;
@@ -44,10 +45,16 @@ export function GroupList(props: GroupListProps) {
       EntryService.renameGroup(group.id, newName);
   }
 
+  function deleteGroupClicked(group: PasswordGroup) {
+    if (window.confirm(`Really remove ${group.name}?`)) {
+      EntryService.removeGroup(group.id);
+    }
+  }
+
   return (<div className="group-list overflow-x-hidden">
       <GroupNode 
-        key={props.groups.id}
-        group={props.groups}
+        key={props.root.id}
+        group={props.root}
         selectedGroup={props.selectedGroup} 
         onGroupSelected={props.onGroupSelected}
         onPopupMenu={onPopupRequested}
@@ -76,7 +83,8 @@ function GroupNode(props: GroupNodeProps) {
   };
 
   function onDragStart(event: React.DragEvent) {
-    event.dataTransfer.setData("text/plain", props.group.id);
+    const model = createDragModel(DragSource.Group, props.group.id);
+    event.dataTransfer.setData("text/plain", serializeDragModel(model));
     event.dataTransfer.dropEffect = "move";
   }
 
@@ -99,12 +107,22 @@ function GroupNode(props: GroupNodeProps) {
   function onDrop(event: React.DragEvent, group: PasswordGroup) {
     event.preventDefault();
     
+    var data = event.dataTransfer.getData("text");
+    event.dataTransfer.clearData();
+
+    const model = parseDragModel(data);
+
     const element = event.target as HTMLElement;
     element.classList.remove("border-2", "border-green-800");
 
-    var data = event.dataTransfer.getData("text");
-    event.dataTransfer.clearData();
-    EntryService.moveGroup(data, group.id)
+    switch(model.type) {
+      case DragSource.Group:
+        EntryService.moveGroup(model.id, group.id);
+        break;
+      case DragSource.Entry:
+        EntryService.moveEntry(model.id, group.id);
+        break;
+    }
   }
 
   function onContextMenu(event: React.MouseEvent) {

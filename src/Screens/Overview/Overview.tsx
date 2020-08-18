@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { PasswordGroup, PasswordEntry } from '../../Model/Model';
 import { EntryTable } from './EntryTable';
 import { GroupList } from './GroupList';
@@ -16,6 +16,15 @@ export function Overview() {
   const [searchResults, setSearchResults] = useState<PasswordEntry[]>();
   const [searchTerms, setSearchTerms] = useState("");
  
+  useEffect(() => {
+    if (selectedGroup) {
+      const group = groups.findGroupById(selectedGroup.id);
+      setSelectedGroup(group ?? groups);
+    } else {
+      setSelectedGroup(groups);
+    }
+  }, [groups]);
+
   //if(!openEntry)
     //showEntryDetails(selectedGroup.entries[0]);
 
@@ -104,7 +113,7 @@ export function Overview() {
         <div className="flex-1 flex overflow-hidden">
           <div className="w-1/4 mr-4 overflow-y-auto">
             <GroupList 
-              groups={groups} 
+              root={groups} 
               selectedGroup={selectedGroup} 
               onGroupSelected={groupSelected} 
             />

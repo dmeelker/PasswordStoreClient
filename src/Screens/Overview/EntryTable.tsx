@@ -5,6 +5,7 @@ import { FaEdit, FaCopy, FaTrashAlt } from 'react-icons/fa';
 import NotificationService from '../../Model/NotificationService';
 import { conditionalClass } from '../../Utilities/RenderHelpers';
 import { useGlobalKeyboardListener } from '../../Utilities/Hooks';
+import { createDragModel, DragSource, serializeDragModel } from '../../Utilities/DragModel';
 
 export interface EntryTableProps {
   entries: Array<PasswordEntry>;
@@ -51,6 +52,12 @@ export function EntryTable(props: EntryTableProps) {
     return <td className={"leading-10" + conditionalClass(tableInFocus && selectedEntry === entry, "bg-blue-200")} onClick={() => selectEntry(entry)}>{content}</td>
   }
 
+  function onDragStart(event: React.DragEvent, entry: PasswordEntry) {
+    const model = createDragModel(DragSource.Entry, entry.id);
+    event.dataTransfer.setData("text/plain", serializeDragModel(model));
+    event.dataTransfer.dropEffect = "move";
+  }
+
   return (<>
     <table className="w-full">
       <thead>
@@ -64,7 +71,7 @@ export function EntryTable(props: EntryTableProps) {
         {props.entries.map((entry) => 
           <tr key={entry.id}>
             {props.showGroup && renderCell(entry, <>{entry.group.name}</>)}
-            {renderCell(entry, <EntryName entry={entry}/>)}
+            {renderCell(entry, <span draggable={true} onDragStart={(e) => onDragStart(e, entry)} ><EntryName entry={entry}/></span>)}
             {renderCell(entry, <>
               {entry.username}
               <div className="float-right">

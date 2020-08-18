@@ -13,23 +13,21 @@ class EntryService {
             return;
 
         parent.addGroup(newGroup);
-        this.root.set(newRoot);
-        this.modelChanged();
+        this.replaceRoot(newRoot);
     }
 
     public renameGroup(groupId: string, newName: string) {
         const newRoot = this.root.get().clone();
         const group = newRoot.findGroupById(groupId);
 
-        if (group === null)
+        if (group === null || newName.trim().length === 0)
             return;
 
         group.name = newName;
         if(group.parent) {
             group.parent.sortGroups();
         }
-        this.root.set(newRoot);
-        this.modelChanged();
+        this.replaceRoot(newRoot);
     }
 
     public moveGroup(groupId: string, targetGroupId: string) {
@@ -48,8 +46,7 @@ class EntryService {
         
         targetGroup.addGroup(group);
         
-        this.root.set(newRoot);
-        this.modelChanged();
+        this.replaceRoot(newRoot);
     }
 
     private canGroupBeMoved(groupToMove: PasswordGroup, targetGroup: PasswordGroup) {
@@ -65,14 +62,26 @@ class EntryService {
         return true;
     }
 
+    public removeGroup(groupId: string) {
+        const newRoot = this.root.get().clone();
+        const group = newRoot.findGroupById(groupId);
+
+        if (group === null)
+            return;
+
+        if(group.parent) {
+            group.parent.removeGroup(group);
+        }
+        this.replaceRoot(newRoot);
+    }
+
     public addEntry(entry: PasswordEntry, groupId: string) {
         const newRoot = this.root.get().clone();
         const targetGroup = newRoot.findGroupById(groupId);
 
         if(targetGroup !== null) {
             targetGroup.add(entry);
-            this.root.set(newRoot);
-            this.modelChanged();
+            this.replaceRoot(newRoot);
         }
     }
 
@@ -87,8 +96,21 @@ class EntryService {
         group.remove(originalEntry);
         group.add(updatedEntry);
 
-        this.root.set(newRoot);
-        this.modelChanged();
+        this.replaceRoot(newRoot);
+    }
+
+    public moveEntry(entryId: string, targetGroupId: string) {
+        const newRoot = this.root.get().clone();
+        const entry = newRoot.findEntryById(entryId);
+        const targetGroup = newRoot.findGroupById(targetGroupId);
+
+        if (!entry || !targetGroup)
+            return;
+
+        entry.group.remove(entry);
+        targetGroup.add(entry);
+
+        this.replaceRoot(newRoot);
     }
 
     public removeEntry(entryId: string) {
@@ -100,8 +122,7 @@ class EntryService {
 
         const group = entry.group;
         group.remove(entry);
-        this.root.set(newRoot);
-        this.modelChanged();
+        this.replaceRoot(newRoot);
     }
 
     public load() {
@@ -141,6 +162,11 @@ class EntryService {
             root.addGroup(new PasswordGroup("Group " + i));
 
         this.root.set(root);
+    }
+
+    private replaceRoot(newRoot: PasswordGroup) {
+        this.root.set(newRoot);
+        this.modelChanged();
     }
 
     private modelChanged() {
