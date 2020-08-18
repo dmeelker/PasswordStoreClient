@@ -8,7 +8,7 @@ import { createDragModel, DragSource, serializeDragModel, parseDragModel } from 
 
 interface GroupListProps {
   root: PasswordGroup;
-  selectedGroup: PasswordGroup;
+  selectedGroup: PasswordGroup | null;
   onGroupSelected: (newSelection: PasswordGroup) => any;
 }
 
@@ -65,7 +65,7 @@ export function GroupList(props: GroupListProps) {
 
 interface GroupNodeProps {
   group: PasswordGroup;
-  selectedGroup: PasswordGroup;
+  selectedGroup: PasswordGroup | null;
   onGroupSelected: (newSelection: PasswordGroup) => any;
   onPopupMenu: (group: PasswordGroup, x: number, y: number) => void;
 }

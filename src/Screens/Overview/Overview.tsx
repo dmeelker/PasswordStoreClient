@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { PasswordGroup, PasswordEntry } from '../../Model/Model';
 import { EntryTable } from './EntryTable';
 import { GroupList } from './GroupList';
@@ -9,42 +9,34 @@ import { Modal } from '../../Components/Modal';
 
 export function Overview() {
   const groups = useObservable(EntryService.root);
-
-  const [selectedGroup, setSelectedGroup] = useState(groups);
+  const [selectedGroupId, setSelectedGroupId] = useState(EntryService.root.get().id);
   const [openEntry, setOpenEntry] = useState<PasswordEntry>();
   const [createMode, setCreateMode] = useState(false);
   const [searchResults, setSearchResults] = useState<PasswordEntry[]>();
   const [searchTerms, setSearchTerms] = useState("");
- 
-  useEffect(() => {
-    if (selectedGroup) {
-      const group = groups.findGroupById(selectedGroup.id);
-      setSelectedGroup(group ?? groups);
-    } else {
-      setSelectedGroup(groups);
-    }
-  }, [groups]);
 
-  //if(!openEntry)
-    //showEntryDetails(selectedGroup.entries[0]);
-
+  const selectedGroup = groups.findGroupById(selectedGroupId);
+  
   function createNewGroup(){
     const newGroupName = prompt("What should the new group be called?");
 
     if (newGroupName) {
       const newGroup = new PasswordGroup(newGroupName);
-      EntryService.addSubGroup(newGroup, (selectedGroup ?? groups).id);
+      EntryService.addSubGroup(newGroup, selectedGroupId);
     }
   }
 
   function createNewEntry(){
+    if (!selectedGroup)
+      return;
+    
     let newEntry = new PasswordEntry(selectedGroup);
     showEntryDetails(newEntry, true);
   }
 
   function groupSelected(group: PasswordGroup) {
     clearSearch();
-    setSelectedGroup(group);
+    setSelectedGroupId(group.id);
   }
 
   function showEntryDetails(entry: PasswordEntry, createMode: boolean = false) {
@@ -56,7 +48,7 @@ export function Overview() {
     if (window.confirm(`Really delete entry '${entry.name}'?`)) {
       const parentGroupId = entry.group.id;
       EntryService.removeEntry(entry.id);
-      setSelectedGroup(EntryService.findGroupById(parentGroupId) as PasswordGroup);
+      setSelectedGroupId(parentGroupId);
     }
   }
 
@@ -65,12 +57,11 @@ export function Overview() {
       return;
 
     if(createMode) {
-      EntryService.addEntry(openEntry, selectedGroup.id);
+      EntryService.addEntry(openEntry, selectedGroupId);
     } else {
       EntryService.updateEntry(openEntry);
     }
 
-    setSelectedGroup(EntryService.findGroupById(selectedGroup.id) as PasswordGroup);
     setOpenEntry(undefined);
   }
 
@@ -120,7 +111,7 @@ export function Overview() {
           </div>
           <div className="flex-1 overflow-y-auto h-full">
             <EntryTable 
-              entries={searchResults ?? selectedGroup.entries} 
+              entries={searchResults ?? selectedGroup?.entries ?? []} 
               showGroup={searchResults !== undefined}
               openEntry={showEntryDetails} 
               onDeleteEntry={doDeleteEntry}
