@@ -18,7 +18,7 @@ export function Login(props: LoginProps) {
 
         login(username, password).then((success) => {
             getPasswords().then((document) => {
-                if (document) {
+                if (document !== null) {
                     EntryService.load(document);
                 } else {
                     EntryService.new(username);

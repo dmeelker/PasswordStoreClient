@@ -47,11 +47,13 @@ export async function login(username: string, password: string): Promise<void> {
     }
 }
 
-export async function getPasswords(): Promise<Document | undefined> {
+export async function getPasswords(): Promise<Document | null> {
     let response = await authenticatedGet('/repository');
 
     if(response.ok) {
         return await response.json();
+    } else if(response.status === 404) {
+        return null;
     } else {
         throw new Error(`Error loading data: ${response.statusText}`);
     }
