@@ -1,7 +1,8 @@
 import { PasswordGroup, PasswordEntry } from "./Model";
 import { Observable } from "./Observable";
 import NotificationService from "./NotificationService";
-import { savePasswords } from "../Services/ApiService";
+import * as Api from "../Services/ApiService";
+import { convertApiGroupToModel, convertToApiModelGroup } from "../Utilities/ModelConverter";
 
 class EntryService {
     readonly root = new Observable<PasswordGroup>(new PasswordGroup("root"));
@@ -126,7 +127,12 @@ class EntryService {
         this.replaceRoot(newRoot);
     }
 
-    public load() {
+    public load(apiDocument: Api.Document) {
+        const root = convertApiGroupToModel(apiDocument.root);
+        this.root.set(root);
+    }
+
+    private generate() {
         const root = new PasswordGroup("root");
         let group1 = new PasswordGroup("Group 1");
 
@@ -159,7 +165,7 @@ class EntryService {
         root.addGroup(group1);
         root.addGroup(group3);
 
-        for(let i=4; i<100; i++)
+        for (let i = 4; i < 100; i++)
             root.addGroup(new PasswordGroup("Group " + i));
 
         this.root.set(root);
@@ -171,7 +177,11 @@ class EntryService {
     }
 
     private modelChanged() {
-        savePasswords("123", "lala").then((result) => {
+        const document = new Api.Document();
+        document.version = 1;
+        document.root = convertToApiModelGroup(this.root.get());
+
+        Api.savePasswords("123", document).then((result) => {
             NotificationService.showNotification("Changes saved");
         });
     }

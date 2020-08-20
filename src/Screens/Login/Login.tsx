@@ -16,8 +16,10 @@ export function Login(props: LoginProps) {
         setLoading(true);
 
         login(username, password).then((success) => {
+            console.log(success);
             getPasswords().then((document) => {
-                EntryService.load();
+                console.log(document);
+                EntryService.load(document);
                 props.loginSuccessful();
             });
         });

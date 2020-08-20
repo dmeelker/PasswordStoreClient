@@ -22,7 +22,7 @@ class App extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
 
-    EntryService.load();
+    //EntryService.load();
 
     this.state = {
       activeScreen: Screen.Login
