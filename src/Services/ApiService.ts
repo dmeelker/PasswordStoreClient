@@ -6,6 +6,14 @@ export function login(username: string, password: string): Promise<string> {
     });
 }
 
+export function getPasswords(): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+        window.setTimeout(() => {
+            resolve("");
+        }, 2000);
+    });
+}
+
 export function savePasswords(userId: string, document: string): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
         window.setTimeout(() => {
