@@ -1,5 +1,5 @@
 import React from 'react';
-import { login, getPasswords } from '../../Services/ApiService';
+import { login, getPasswords, Entry } from '../../Services/ApiService';
 import EntryService from '../../Model/EntryService';
 
 export interface LoginProps {
@@ -18,7 +18,11 @@ export function Login(props: LoginProps) {
 
         login(username, password).then((success) => {
             getPasswords().then((document) => {
-                EntryService.load(document);
+                if (document) {
+                    EntryService.load(document);
+                } else {
+                    EntryService.new(username);
+                }
                 props.loginSuccessful();
             });
         }, () => {

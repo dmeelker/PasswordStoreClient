@@ -127,6 +127,10 @@ class EntryService {
         this.replaceRoot(newRoot);
     }
 
+    public new(name: string) {        
+        this.replaceRoot(new PasswordGroup(name));
+    }
+
     public load(apiDocument: Api.Document) {
         const root = convertApiGroupToModel(apiDocument.root);
         this.root.set(root);

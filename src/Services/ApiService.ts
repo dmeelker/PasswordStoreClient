@@ -47,7 +47,7 @@ export async function login(username: string, password: string): Promise<void> {
     }
 }
 
-export async function getPasswords(): Promise<Document> {
+export async function getPasswords(): Promise<Document | undefined> {
     let response = await authenticatedGet('/repository');
 
     if(response.ok) {
