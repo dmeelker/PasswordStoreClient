@@ -1,6 +1,7 @@
 import * as Model from "../Model/Model";
+import Config from "../config";
 
-const apiUrl = "https://localhost:5001";
+let token: string | null = null;
 
 export class Entry {
     public id: string = "";
@@ -22,30 +23,32 @@ export class Document {
     public root: Group = new Group();
 }
 
-export async function login(username: string, password: string): Promise<string> {
-    let options: RequestInit = {method: 'get'};
-    let request = new Request(apiUrl + '/repository?username=test', options);
+export async function login(username: string, password: string): Promise<void> {
+    let options: RequestInit = {
+        method: 'post',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user: username, 
+            password: password
+        }),
+    };
+
+    let request = new Request(Config.API_URL + '/auth', options);
     let response = await fetch(request);
 
     if(response.ok) {
-        return await response.text();
+        const tokenResponse = await response.json();
+        token = tokenResponse.token;
+        return;
     } else {
         throw new Error(`Error loading data: ${response.statusText}`);
     }
-    
-    // return new Promise<string>((resolve, reject) => {
-    //     window.setTimeout(() => {
-    //         resolve("12345");
-    //     }, 2000);
-    // });
 }
 
-
-
 export async function getPasswords(): Promise<Document> {
-    let options: RequestInit = {method: 'get'};
-    let request = new Request(apiUrl + '/repository?username=test', options);
-    let response = await fetch(request);
+    let response = await authenticatedGet('/repository');
 
     if(response.ok) {
         return await response.json();
@@ -55,17 +58,7 @@ export async function getPasswords(): Promise<Document> {
 }
 
 export async function savePasswords(userId: string, document: Document): Promise<boolean> {
-    let options: RequestInit = {
-        method: 'post',
-        // headers: {
-        //     'Accept': 'application/json',
-        //     'Content-Type': 'application/json'
-        //   },
-        body: JSON.stringify(document),
-    };
-
-    let request = new Request(apiUrl + '/repository?username=test', options);
-    let response = await fetch(request);
+    let response = await authenticatedPost('/repository', document);
 
     if(response.ok) {
         await response.text();
@@ -73,4 +66,27 @@ export async function savePasswords(userId: string, document: Document): Promise
     } else {
         throw new Error(`Error loading data: ${response.statusText}`);
     }
+}
+
+function authenticatedGet(url: string): Promise<Response> {
+    let options: RequestInit = {
+        method: 'get',
+        headers: {
+            "auth-token": token as string
+        }
+    };
+    let request = new Request(Config.API_URL + url, options);
+    return fetch(request);
+}
+
+function authenticatedPost(url: string, body: any): Promise<Response> {
+    let options: RequestInit = {
+        method: 'post',
+        headers: {
+            "auth-token": token as string
+        },
+        body: JSON.stringify(body)
+    };
+    let request = new Request(Config.API_URL + url, options);
+    return fetch(request);
 }
