@@ -3,7 +3,7 @@ const dev = {
 };
 
 const prod = {
-    API_URL: "https://aap:5001"
+    API_URL: "http://dmeelker.hopto.org:5000"
 };
 
 const config = process.env.REACT_APP_ENVIRONMENT == "production" ? prod : dev;
